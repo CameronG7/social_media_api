@@ -4,12 +4,10 @@ const {
   getThots,
   createThot,
   updateThot,
-  deleteThot
-} = require('../../controllers/thotController');
-const {
+  deleteThot,
   addReaction,
   deleteReaction
-} = require('../../controllers/reactionController');
+} = require('../../controllers/thotController');
 
 router.route('/')
   .get(getThots)
@@ -20,7 +18,7 @@ router.route('/:thotId')
   .put(updateThot)
   .delete(deleteThot);
 
-router.route('/:ThotId/reactions')
+router.route('/:thotId/reactions')
   .post(addReaction)
   .delete(deleteReaction);
 

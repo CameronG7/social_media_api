@@ -1,4 +1,4 @@
-const { Schema, model, Types } = require('mongoose');
+const { Schema, Types } = require('mongoose');
 const dateFormat = require('../utils/dateFormat');
 
 const reactionSchema = new Schema(
@@ -30,16 +30,4 @@ const reactionSchema = new Schema(
   }
 );
 
-reactionSchema // change this to match reaact req
-  .virtual('getReactionCss')
-  // Getter
-  .get(function () {
-    return `color: ${this.color}`;
-  });
-
-const Reaction = model('reaction', reactionSchema);
-
-module.exports = Reaction;
-
-
-// delete this once all confirmed working
+module.exports = reactionSchema;

@@ -1,8 +1,10 @@
 /* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-expressions */
 const { Thot, User } = require('../models');
 
 module.exports = {
+  // get all
   async getThots(req, res) {
     try {
       const thots = await Thot.find()
@@ -15,9 +17,10 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+  // get one
   async getSingleThot(req, res) {
     try {
-      const thot = await Thot.findOne({ _id: req.params.thotId })
+      const thot = await Thot.findById(req.params.thotId)
         .populate('reactions')
         .select('-__v');
 
@@ -32,10 +35,10 @@ module.exports = {
   async createThot(req, res) {
     try {
       const thot = await Thot.create(req.body);
+      // push thot to user's thots array
       const user = await User.findOneAndUpdate(
         { username: req.body.username },
         {
-          // eslint-disable-next-line no-underscore-dangle
           $push: { thots: thot._id }
         },
         { new: true });
@@ -81,6 +84,39 @@ module.exports = {
       }
 
       res.json({dbThotData, user});
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+  async addReaction(req, res) {
+    try {
+      const thot = await Thot.findOneAndUpdate(
+        { _id: req.params.thotId },
+        { $addToSet: { reactions: req.body } },
+        { new: true }
+      );
+
+      !thot
+        ? res.status(404).json({ message: 'Reaction created, but found no thought with that ID' })
+        : res.json(thot);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+  // delete reaction
+  async deleteReaction(req, res) {
+    try {
+      const thot = await Thot.findByIdAndUpdate(
+        req.params.thotId,
+        { $pull: { reactions: { reactionId: req.body.reactionId } } },
+        { new: true }
+      );
+
+      !thot
+        ? res.status(404).json({ message: 'No thought with that ID' })
+        : res.send({'Deleted the reaction 🎉': thot});
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
