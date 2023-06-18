@@ -55,7 +55,7 @@ module.exports = {
   async updateThot(req, res) {
     try {
       const dbThotData = await Thot.findByIdAndUpdate(
-        req.params.ThotId,
+        req.params.thotId,
         req.body,
         { new: true }
       );
@@ -69,21 +69,20 @@ module.exports = {
   // delete a Thot
   async deleteThot(req, res) {
     try {
-      const dbThotData = await Thot.findByIdAndRemove(req.params.thotId)
+      const dbThotData = await Thot.findOneAndDelete({_id: req.params.thotId})
         .select(['-__v', '-reactions']);
       // get the user that created this thot and remove the thot from their `thots` array
 
-      const user = await User.findOneAndUpdate(
-        { username: dbThotData.username },
-        { $pull: { thots: dbThotData._id } },
-        { new: true }
-      );
-
       if (!dbThotData) {
         res.status(404).json({ message: 'No thot found with that ID' });
+      } else {
+        await User.findOneAndUpdate(
+          { username: dbThotData.username },
+          { $pull: { thots: dbThotData._id } },
+          { new: true }
+        );
+        res.json(dbThotData);
       }
-
-      res.json({dbThotData, user});
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
@@ -116,7 +115,7 @@ module.exports = {
 
       !thot
         ? res.status(404).json({ message: 'No thought with that ID' })
-        : res.send({'Deleted the reaction 🎉': thot});
+        : res.send({ 'Deleted the reaction 🎉': thot });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);

@@ -24,7 +24,7 @@ const reactionSchema = new Schema(
   },
   {
     toJSON: {
-      virtuals: true
+      getters: true // use getter on createdAt to format date
     },
     id: false
   }
