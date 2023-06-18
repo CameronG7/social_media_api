@@ -42,7 +42,7 @@ Open postman or insomnia to make api requests and see magic.
 
 ## Credits
 
-This app was built using express, mysql2, sequelize, and dotenv
+This app was built using express, moment, mongoDB and Mongoose.js
 
 ## License
 
