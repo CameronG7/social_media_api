@@ -37,8 +37,7 @@ Open postman or Insomnia to run the appropriate api requests
 
 
 
-Use the routes shown in the 
-Open postman or insomnia to make api requests and see magic.
+Use the routes shown in the video above in postman or insomnia to make api requests and see magic.
 
 ## Credits
 
